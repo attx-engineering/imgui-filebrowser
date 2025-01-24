@@ -216,7 +216,7 @@ namespace ImGui
 
 inline ImGui::FileBrowser::FileBrowser(ImGuiFileBrowserFlags flags, std::filesystem::path defaultDirectory)
     : width_(700)
-    , height_(450)
+    , height_(150)
     , posX_(0)
     , posY_(0)
     , flags_(flags)
@@ -365,6 +365,11 @@ inline void ImGui::FileBrowser::Display()
         OpenPopup(openLabel_.c_str());
     }
     isOpened_ = false;
+
+    // Debug prints
+    std::cout << "Internal Window Position: (" << posX_ << ", " << posY_ << ")" << std::endl;
+    std::cout << "Actual Window Position: (" << ImGui::GetWindowPos().x << ", " << ImGui::GetWindowPos().y << ")" << std::endl;
+    // std::cout << "Window Size: (" << width_ << ", " << height_ << ")" << std::endl;
 
     // open the popup window
 
@@ -735,21 +740,21 @@ inline void ImGui::FileBrowser::Display()
                     CloseCurrentPopup();
                 }
             }
-            else if(IsKeyPressed(ImGuiKey_GamepadFaceDown) && IsItemHovered()) 
-            {
-                if(rsc.isDir)
-                {
-                    shouldSetNewDir = true;
-                    newDir = (rsc.name != "..") ? (currentDirectory_ / rsc.name) : currentDirectory_.parent_path();
-                    SetKeyboardFocusHere(-1);
-                }
-                else if(!(flags_ & ImGuiFileBrowserFlags_SelectDirectory))
-                {
-                    selectedFilenames_ = { rsc.name };
-                    isOk_ = true;
-                    CloseCurrentPopup();
-                }
-            }
+            // else if(IsKeyPressed(ImGuiKey_GamepadFaceDown) && IsItemHovered()) 
+            // {
+            //     if(rsc.isDir)
+            //     {
+            //         shouldSetNewDir = true;
+            //         newDir = (rsc.name != "..") ? (currentDirectory_ / rsc.name) : currentDirectory_.parent_path();
+            //         SetKeyboardFocusHere(-1);
+            //     }
+            //     else if(!(flags_ & ImGuiFileBrowserFlags_SelectDirectory))
+            //     {
+            //         selectedFilenames_ = { rsc.name };
+            //         isOk_ = true;
+            //         CloseCurrentPopup();
+            //     }
+            // }
         }
     }
 
@@ -782,8 +787,8 @@ inline void ImGui::FileBrowser::Display()
     if(!focusOnInputText && !editDir_)
     {
         const bool selectAll = (flags_ & ImGuiFileBrowserFlags_MultipleSelection) &&
-                               IsKeyPressed(ImGuiKey_A) && (IsKeyDown(ImGuiKey_LeftCtrl) ||
-                               IsKeyDown(ImGuiKey_RightCtrl));
+                               IsKeyPressed(ImGuiKey_A) && (IsKeyDown(ImGuiKey_LeftControl) ||
+                               IsKeyDown(ImGuiKey_RightControl));
         if(selectAll)
         {
             const bool needDir = flags_ & ImGuiFileBrowserFlags_SelectDirectory;
